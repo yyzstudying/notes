@@ -38,7 +38,7 @@ function SUCCESS(){
 	start_seconds=$(date --date="$starttime" +%s);
 
 	end_seconds=$(date --date="$endtime" +%s);
-    touch /report/log/rcos-rcdc/result.log
+    touch /report/log/$NAME/result.log
     local msg="{\"status\":\"0\",\"taking\":\"$((end_seconds-start_seconds))s\",\"message\":\"$1\"}"
     echo $msg >> $RESULT_LOG
 }
@@ -96,11 +96,14 @@ INFO "RPM打包结束"
 if [ ! -d ${OUTPUT_ROOT} ]; then
     mkdir -pv ${OUTPUT_ROOT}
 fi
-INFO "将更新包拷贝到指定目录 : /report/output"
+INFO "将更新包拷贝到指定目录 : ${NAME}-${VERSION}.rpm  -> /report/output"
 cp -f ~/rpmbuild/RPMS/x86_64/${NAME}-${VERSION}-1.x86_64.rpm ${OUTPUT_ROOT}/${NAME}-${VERSION}.rpm
 
 # 清空rpmbuild文件夹
+INFO "清理rpmbuild与BUILDROOT"
 rm -rf ~/rpmbuild
+rm -rf /opt/build/rcdc-rpm/BUILDROOT
+
 INFO "正在生成结果记录"
 
 SUCCESS "打包成功"

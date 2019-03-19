@@ -30,7 +30,7 @@ function FINDSCRIPT(){
  jar_file_1=$1
  # 判断是否是普通文件
  if [ -f $jar_file_1 ];then
-    INFO "------开始：对$jar_file_1进行解压操作"
+    INFO "开始：对$jar_file_1进行解压操作"
 	unzip -o -q $jar_file_1 -d $jar_temp 
 	INFO "成功解压JAR包$jar_file_1"
 	   

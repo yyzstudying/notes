@@ -8,11 +8,11 @@ WAR_NAME=$1
 WAR_VERSION=$2
 MAVEN_ROOT=http://172.21.192.204:8081/nexus/content/repositories/public
 # deploy下载地址
-BACKEND_WAR_ROOT=$MAVEN_ROOT"/com/ruijie/rcos/rcdc/rco/module/rcdc-rco-module-deploy"
-DOWNLOAD_BACKEND_WAR=$BACKEND_WAR_ROOT"/$WAR_VERSION-RELEASE/rcdc-rco-module-deploy-$WAR_VERSION-RELEASE.war"
+BACKEND_WAR_ROOT=$MAVEN_ROOT"/com/ruijie/rcos/rcdc/rco/module/rcdc-rco-module-deploy/"
+DOWNLOAD_BACKEND_WAR=$BACKEND_WAR_ROOT"$WAR_VERSION-RELEASE/rcdc-rco-module-deploy-$WAR_VERSION-RELEASE.war"
 # frontend下载地址
-FRONTEND_WAR_ROOT=$MAVEN_ROOT"/com/ruijie/rcos/rcdc/rco/module/rcdc-rco-module-frontend"
-DOWNLOAD_FRONTEND_WAR=$FRONTEND_WAR_ROOT"/$WAR_VERSION-RELEASE/rcdc-rco-module-frontend-$WAR_VERSION-RELEASE.war"
+FRONTEND_WAR_ROOT=$MAVEN_ROOT"/com/ruijie/rcos/rcdc/rco/module/rcdc-rco-module-frontend/"
+DOWNLOAD_FRONTEND_WAR=$FRONTEND_WAR_ROOT"$WAR_VERSION-RELEASE/rcdc-rco-module-frontend-$WAR_VERSION-RELEASE.war"
 
 
 
@@ -52,30 +52,64 @@ fi
 mkdir -p ./deploy_tmp
 wget  -np -nd  -r -A war -P ./deploy_tmp -o /report/log/$WAR_NAME/build.log $DOWNLOAD_BACKEND_WAR
 deploy_num=$(ls -lt ./deploy_tmp | grep $WAR_VERSION  | wc -l)
-if [ $deploy_num -eq 0 ];then
-   ERROR "没有找到对应的deploy war包"
-   exit 1
+if [ $deploy_num -eq 1 ];then
+    #解压该文件到指定目录
+	INFO "找到对应的deploy-RELEASE-war包,开始解压"
+	mkdir -p $RCDC_UPGRADE_WAR_ROOT/rcdc-rco-module-deploy/
+	rm -rf $RCDC_UPGRADE_WAR_ROOT/rcdc-rco-module-deploy/*
+	unzip -q -o  "./deploy_tmp/rcdc-rco-module-deploy-$WAR_VERSION-RELEASE.war" -d $RCDC_UPGRADE_WAR_ROOT/rcdc-rco-module-deploy/
+	INFO "rcdc-rco-module-deploy-$WAR_VERSION-RELEASE.war解压成功 "
+
+else
+    INFO "没有找到对应的deploy-RELEASE-war包"
+    INFO "开始下载deploy-SNAPSHOT-war包"
+    wget  -np -nd  -r -A war -P ./deploy_tmp -o /report/log/$WAR_NAME/build.log $BACKEND_WAR_ROOT
+	#在临时文件夹中查找出修改时间最新的文件名
+	ls -lt ./deploy_tmp | grep $WAR_VERSION | head -n 1 |awk '{print $9}' > tmp.txt
+	read tmp < tmp.txt
+	rm -rf ./tmp.txt
+	if [ ! -n "$tmp" ]; then
+		 ERROR "找不到$WAR_VERSION 相关的war包！"
+		 rm -rf ./deploy_tmp
+		 exit 1
+	fi
+	INFO "找到$tmp文件" 
+	#解压该文件到指定目录
+	mkdir -p $RCDC_UPGRADE_WAR_ROOT/rcdc-rco-module-deploy/
+	rm -rf $RCDC_UPGRADE_WAR_ROOT/rcdc-rco-module-deploy/*
+	unzip -q -o ./deploy_tmp/$tmp -d $RCDC_UPGRADE_WAR_ROOT/rcdc-rco-module-deploy/  
+	INFO "$tmp解压成功"
 fi
 
-#解压该文件到指定目录
-mkdir -p $RCDC_UPGRADE_WAR_ROOT/rcdc-rco-module-deploy/
-rm -rf $RCDC_UPGRADE_WAR_ROOT/rcdc-rco-module-deploy/*
-unzip -q -o  "./deploy_tmp/rcdc-rco-module-deploy-$WAR_VERSION-RELEASE.war" -d $RCDC_UPGRADE_WAR_ROOT/rcdc-rco-module-deploy/
-INFO "rcdc-rco-module-deploy-$WAR_VERSION-RELEASE.war解压成功 "
 
 mkdir -p ./frontend_tmp
 wget  -np -nd  -r -A war -P ./frontend_tmp -o /report/log/$WAR_NAME/build.log $DOWNLOAD_FRONTEND_WAR
-
 frontend_num=$(ls -lt ./frontend_tmp | grep $WAR_VERSION  | wc -l)
-if [ $frontend_num -eq 0 ];then
-   ERROR "没有找到对应的frontend war包"
-   exit 1
+if [ $frontend_num -eq 1 ];then
+    INFO "找到对应的frontend-RELEASEwar包"
+	mkdir -p $RCDC_UPGRADE_WAR_ROOT/rcdc-rco-module-frontend/
+	rm -rf $RCDC_UPGRADE_WAR_ROOT/rcdc-rco-module-frontend/*
+	unzip -q -o "./frontend_tmp/rcdc-rco-module-frontend-$WAR_VERSION-RELEASE.war" -d $RCDC_UPGRADE_WAR_ROOT/rcdc-rco-module-frontend/
+	INFO "rcdc-rco-module-frontend-$WAR_VERSION-RELEASE.war解压成功 " 
+else
+   INFO "没有找到对应的frontend-RELEASE war包"
+   INFO "开始下载frontend-SNAPSHOT-war包"
+   wget  -np -nd  -r -A war -P ./frontend_tmp -o /report/log/$WAR_NAME/build.log $FRONTEND_WAR_ROOT
+	ls -lt ./frontend_tmp | grep $WAR_VERSION | head -n 1 |awk '{print $9}' > tmp2.txt
+	read tmp2 < tmp2.txt
+	rm -rf ./tmp2.txt
+	if [ ! -n "$tmp2" ]; then
+		 ERROR "找不到$WAR_VERSION 相关的war包！"
+		 rm -rf ./frontend_tmp
+		 exit 1
+	fi
+	INFO "找到$tmp2文件"
+	mkdir -p $RCDC_UPGRADE_WAR_ROOT/rcdc-rco-module-frontend/
+	rm -rf $RCDC_UPGRADE_WAR_ROOT/rcdc-rco-module-frontend/*
+	unzip -q -o ./frontend_tmp/$tmp2 -d $RCDC_UPGRADE_WAR_ROOT/rcdc-rco-module-frontend/ 
+	INFO "$tmp2解压成功"
 fi
 
-mkdir -p $RCDC_UPGRADE_WAR_ROOT/rcdc-rco-module-frontend/
-rm -rf $RCDC_UPGRADE_WAR_ROOT/rcdc-rco-module-frontend/*
-unzip -q -o "./frontend_tmp/rcdc-rco-module-frontend-$WAR_VERSION-RELEASE.war" -d $RCDC_UPGRADE_WAR_ROOT/rcdc-rco-module-frontend/
-INFO "rcdc-rco-module-frontend-$WAR_VERSION-RELEASE.war解压成功 " 
 
 rm -rf ./deploy_tmp
 rm -rf ./frontend_tmp

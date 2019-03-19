@@ -15,7 +15,7 @@ URL:		http://www.ruijie.com.cn/
 #This generally involves the equivalent of a "make".
 
 %install
-cp -rf /opt/build/base-rpm/BUILDROOT/data/ $RPM_BUILD_ROOT
+cp -rf /opt/build/%{pkgname}/BUILDROOT/data/ $RPM_BUILD_ROOT
 
 %check
 
