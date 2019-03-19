@@ -1,0 +1,9 @@
+<platform name="RCOS" >
+	<version>9.0.0</version>
+	<components>
+		<component name="rcos-rcdc" version="0.0.1" platform-type="ALL" reboot-when-upgrade="NOT"/>
+		<component name="rcos-bt" version="1.0.0" platform-type="RCD" reboot-when-upgrade="NOT"/>
+		<component name="rcos-rco-linux-vdi" version="0.0.1" platform-type="VDI" reboot-when-upgrade="NOT"/>
+		<component name="rcos-guesttool" version="0.0.1" platform-type="VDI" reboot-when-upgrade="NOT"/>
+	</components>
+</platform>
