@@ -72,9 +72,26 @@ function getVersion(){
     version=$(xmllint --xpath "string(//platform/components/component[@name='$1']/@version)" $version_file)
     echo $version
 }
+
 ```
 
-**10.rpm打包spec文件**
+**10 .版本号排序**
+
+  ~~~shell
+ ls | sort -V
+  ~~~
+
+
+
+
+
+
+
+
+
+
+
+**rpm打包spec文件**
 
 ```shell
 # 这个区域定义的Name、Version这些字段对应的值可以在后面
