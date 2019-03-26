@@ -22,6 +22,8 @@ cp -rf /opt/build/%{pkgname}/BUILDROOT/data/ $RPM_BUILD_ROOT
 
 %post
 
+
+
 %preun
     
 %postun

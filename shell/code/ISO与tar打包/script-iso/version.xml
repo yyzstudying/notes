@@ -3,10 +3,10 @@
 	<components>
 		<component name="rcos-libvirt" version="1.0.0" platform-type="VDI" reboot-when-upgrade="NOT"/>
 		<component name="rcos-vmtools" version="1.0.0" platform-type="VDI" reboot-when-upgrade="NOT"/>
-		<component name="rcos-rcdc" version="0.0.1" platform-type="ALL" reboot-when-upgrade="NOT"/>
-		<component name="rcos-bt" version="1.0.0" platform-type="RCD" reboot-when-upgrade="NOT"/>
-		<component name="rcos-abslayer" version="1.0.0" platform-type="RCD" reboot-when-upgrade="NOT"/>
-		<component name="rcos-rco-linux-vdi" version="0.0.1" platform-type="VDI" reboot-when-upgrade="NOT"/>
+		<component name="rcos-rcdc" version="1.0.2" platform-type="ALL" reboot-when-upgrade="NOT"/>
+		<component name="rcos-bt" version="1.0.2" platform-type="RCD" reboot-when-upgrade="NOT"/>
+		<component name="rcos-abslayer" version="1.0.2" platform-type="RCD" reboot-when-upgrade="NOT"/>
+		<component name="rcos-rco-linux-vdi" version="1.0.2" platform-type="VDI" reboot-when-upgrade="NOT"/>
 		<component name="rcos-rainconfig" version="1.0.0" platform-type="VDI" reboot-when-upgrade="NOT"/>
 		<component name="rcos-est-client" version="3.0.1" platform-type="VDI" reboot-when-upgrade="NOT"/>
 		<component name="rcos-est-usbp" version="3.0.1" platform-type="VDI" reboot-when-upgrade="NOT"/>
@@ -14,9 +14,8 @@
 		<component name="rcos-shine" version="0.0.1" platform-type="VDI" reboot-when-upgrade="LATER"/>
 		<component name="rcos-est-server" version="3.0.0" platform-type="VDI" reboot-when-upgrade="NOT"/>
 		<component name="rcos-qemu" version="1.0.0" platform-type="VDI" reboot-when-upgrade="NOT"/>
-		<component name="rcos-guesttool" version="0.0.1" platform-type="VDI" reboot-when-upgrade="NOT"/>
-		<component name="rcos-abslayer" version="1.0.0" platform-type="VDI" reboot-when-upgrade="NOT"/>
-		<component name="rcos-bt" version="1.0.0" platform-type="VDI" reboot-when-upgrade="NOT"/>
+		<component name="rcos-guesttool" version="1.0.2" platform-type="VDI" reboot-when-upgrade="NOT"/>
+		<component name="rcos-bt" version="1.0.2" platform-type="VDI" reboot-when-upgrade="NOT"/>
 		<component name="rcos-network" version="1.0.0" platform-type="VDI" reboot-when-upgrade="NOT"/>
 		<component name="rcos-est-usbredir" version="3.0.0" platform-type="VDI" reboot-when-upgrade="NOT"/>
 	</components>

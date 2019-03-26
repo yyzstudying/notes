@@ -52,7 +52,7 @@ if [ ! -n "$VERSION" ]; then
  ERROR "请输入第二个参数！VERSION"
  exit 1
 fi
-
+<<EDF
 # -----------------------jar-------------------------
 #下载jar包到临时文件夹
 INFO "开始下载jar包"
@@ -129,6 +129,7 @@ else
 fi
 rm -rf frontend_tmp
 
+EDF
 
 #rpm打包
 INFO "开始RPM打包......"
@@ -148,8 +149,11 @@ cp -f ~/rpmbuild/RPMS/x86_64/${RPM_NAME}-${VERSION}-1.x86_64.rpm ${OUTPUT_ROOT}/
 
 # 清空rpmbuild文件夹
 INFO "清理rpmbuild和BUILDROOT"
+
+<<EDF
 rm -rf ~/rpmbuild
 rm -rf /opt/build/$RPM_NAME/BUILDROOT
+EDF
 
 INFO "success!"
 

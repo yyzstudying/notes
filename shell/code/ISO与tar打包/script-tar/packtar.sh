@@ -8,9 +8,7 @@ echo ""
 
 mkdirs $UPGRADE_ROOT
 
-cp $VERSION_FILE $UPGRADE_ROOT
-
-#判断一个文件夹中是否含有一个$2文件
+#判断一个文件夹中是否含有几个个$2文件
 function ifExistFile(){
   cd $1
   file=$2
@@ -27,20 +25,34 @@ function rpmAndShCheck(){
 	 exit 1
   fi
   
-  sh_num=`ls $1| grep .sh | wc -l`
-  if [ $sh_num -eq 1 ];then
-     info "$1文件中含有升级脚本文件"
-  else
-     info "$1文件没有升级脚本文件，创建默认升级文件"
-	 touch $1/$2"-upgrade-"$VERSION".sh"
-	 echo "#!/bin/bash" >> $1/$2"-upgrade-"$VERSION".sh"
-	 echo "printf \"success\"" >> $1/$2"-upgrade-"$VERSION".sh"
-  fi
+  #sh_num=`ls $1| grep .sh | wc -l`
+  #if [ $sh_num -eq 5 ];then
+  #   info "$1文件中含有完整的升级脚本文件"
+  #else
+     for shell_name_temp in ${SHELL_NAME[@]};do
+	 shell_file_name=$1/$2$shell_name_temp
+		if [ ! -e $shell_file_name ];then
+			info "$shell_file_name 不存在，创建默认脚本"
+			touch $shell_file_name
+			echo "#!/bin/bash" >> $shell_file_name
+		echo "printf \"success\"" >> $shell_file_name
+		fi
+	 done
+ # fi
 
 }
 
 info "开始准备文件"
+if [ ! -e  $VERSION_JSON ];then
+ error "$VERSION_JSON 不存在"
+ exit 1
+fi
+
+cp $VERSION_JSON $UPGRADE_ROOT
+info "复制version.json到工作目录成功"
+
 for component_name in ${UPGRADE_COMPONENTS[@]};do
+    info "开始操作【$component_name】"
    mkdirs $UPGRADE_ROOT/$component_name
     if [  -d $component_name ];then 
 	       # 文件夹中rpm和sh文件校验
@@ -74,6 +86,22 @@ for component_name in ${UPGRADE_COMPONENTS[@]};do
 done
 
 cd $UPGRADE_ROOT
+
+info "准备清理deb、iso文件"
+for component_name in ${UPGRADE_COMPONENTS[@]};do
+	if [  -d $component_name ];then 
+	      if [ $(ifExistFile $component_name "*.deb") -eq 1 ];then
+		     info "清理了$component_name中的deb文件"
+		     rm -rf  $component_name/*.deb
+		  fi
+		  if [ $(ifExistFile $component_name "*.iso") -eq 1 ];then
+		     info "清理了$component_name中的iso文件"
+		     rm -rf  $component_name/*.iso
+		  fi
+	fi
+done
+info "清理完毕"
+
 info "开始压缩文件"
 tar zcvf $TAR_FILE_NAME *
 
@@ -92,5 +120,5 @@ echo "*************打包tar成功****************"
 echo "时间:$(date "+%Y-%m-%d %H:%M:%S")"
 echo "****************************************"
 echo ""
-
+finish 0 "打包tar成功"
 

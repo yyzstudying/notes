@@ -81,11 +81,30 @@ function getVersion(){
  ls | sort -V
   ~~~
 
+**11.获取文件中的键值对**
 
+```shell
+# 获取文件中的键值对
+while read line
+do
+	key=`echo $line | cut -d "=" -sf 1`
+	value=`echo $line | cut -d "=" -sf 2-`
+	echo $key : $value
+done < $FILE
+```
 
+**12.获取版本号**
 
+```shell
+ls | grep -E -o  "([0-9])+\.([0-9])+\.([0-9])+"
+```
 
+**13.替换字符串**
 
+```shell
+sed "s/要替换的文本/替换为/g"  
+# ls | sed "s/-1.0.0-dhasufaf.jar//g"
+```
 
 
 
