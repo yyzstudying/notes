@@ -1,0 +1,6 @@
+INSERT INTO t_sk_global_parameter (
+   "id", "param_key", "param_value", "default_value", "create_time", "update_time", "version"
+) 
+VALUES (
+   '69e3acab-ef15-4d83-a58f-423dec989424', 'configuration_wizard', '', '{"isShow": true,"index":0}', '2019-04-02', '2019-04-02', '0'
+);

@@ -1,0 +1,33 @@
+/*云桌面策略推荐*/
+CREATE TABLE t_cbb_desk_strategy_recommend(
+ id                     uuid         PRIMARY KEY NOT NULL,
+ create_time            Date         NOT NULL,
+ name                   Varchar(32)  NOT NULL,
+ pattern                Varchar(32)  NOT NULL,
+ cpu                    Int4         NOT NULL,
+ memory                 Int4         NOT NULL,
+ system_size            Int4         NOT NULL,
+ personal_size          Int4         NOT NULL,
+ is_allow_internet      bool         DEFAULT TRUE NOT NULL,
+ is_open_usb_read_only  bool         DEFAULT FALSE NOT NULL,
+ is_show                bool         DEFAULT TRUE NOT NULL,
+ version                int          DEFAULT 0 NOT NULL
+ 
+);
+
+/*网络配置推荐*/
+CREATE TABLE t_cbb_desk_network_recommend(
+ id                     uuid         PRIMARY KEY NOT NULL,
+ create_time            Date         NOT NULL,
+ ip_cidr                Varchar(32)  NOT NULL,
+ ip_type                Varchar(32)  NOT NULL,
+ gateway                Varchar(32)  NOT NULL,
+ dns                    Varchar(32)  NOT NULL,
+ network_name           Varchar(32)  NOT NULL,
+ start_ip               Varchar(32)  ,
+ end_ip                 Varchar(32)  ,
+ vlan                   Int4         NOT NULL,
+ is_show                bool         DEFAULT TRUE NOT NULL,
+ version                int          DEFAULT 0 NOT NULL
+);
+            

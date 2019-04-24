@@ -1,0 +1,151 @@
+/*镜像模板主表*/
+CREATE TABLE t_cbb_image_template (
+ id                             uuid         PRIMARY KEY NOT NULL,
+ version                        int          DEFAULT 0 NOT NULL,
+ create_time                    Date         NOT NULL,
+ ref_count                      int8         NOT NULL,
+ image_template_name            Varchar(128) NOT NULL,
+ image_template_state           Varchar(32)  NOT NULL,
+ os_type                        Varchar(32)  ,
+ personal_desk_count            Int4         DEFAULT 0 NOT NULL,
+ recoverable_desk_count         Int4         DEFAULT 0 NOT NULL,
+ enable_persion_desk            bool         DEFAULT FALSE NOT NULL,
+ enable_recoverable_desk        bool         DEFAULT FALSE NOT NULL,
+ last_recovery_point_id         uuid         ,
+ system_disk_size               Int4         ,
+ support_gloden_image           bool         DEFAULT FALSE NOT NULL,
+ support_application_delivery   bool         DEFAULT FALSE NOT NULL
+                                           
+);
+COMMENT ON COLUMN t_cbb_image_template.ref_count IS '引用计数';
+COMMENT ON COLUMN t_cbb_image_template.os_type IS '使用ISO、上传预制镜像时，字段为空';
+COMMENT ON COLUMN t_cbb_image_template.last_recovery_point_id IS '首次镜像编辑时为空';
+COMMENT ON COLUMN t_cbb_image_template.system_disk_size IS '首次镜像编辑时为空';
+
+
+/*镜像模板还原点*/
+CREATE TABLE t_cbb_image_template_restore_point (
+id                       uuid         PRIMARY KEY NOT NULL,
+version                  int          DEFAULT 0 NOT NULL,
+create_time              Date         NOT NULL,
+ref_count                int8         NOT NULL,
+image_template_id        uuid         NOT NULL,
+restore_point_state      Varchar(32)  NOT NULL,
+change_log               Varchar(2048),
+system_disk_size         Int4         ,
+personal_desk_count      Int4         DEFAULT 0 NOT NULL,
+recoverable_desk_count   Int4         DEFAULT 0 NOT NULL,
+parent_id                uuid         
+                                           
+);
+COMMENT ON COLUMN t_cbb_image_template_restore_point.ref_count IS '引用计数';
+COMMENT ON COLUMN t_cbb_image_template_restore_point.system_disk_size IS '首次镜像编辑时为空';
+COMMENT ON COLUMN t_cbb_image_template_restore_point.parent_id IS '镜像的首个还原点为空';
+
+
+/*镜像模板编辑中的状态记录*/
+CREATE TABLE t_cbb_image_template_editing_stage (
+id                               PRIMARY KEY NOT NULL,
+version                          int         DEFAULT 0 NOT NULL,
+create_time                      Date    ,
+stage_type                       Varchar(32) ,
+delete_state                     Varchar(32) ,
+edit_stage                       Varchar(32) ,
+create_mode                      Varchar(32) ,
+os_iso_file_id                   UUID        ,
+src_image_template_id            UUID        ,
+src_restore_point_id             UUID        ,
+upload_pre_created_image_state   Varchar(32) ,
+clone_exist_image_template_state Varchar(32) ,
+prepare_for_edit_state           Varchar(32) ,
+config_vm_parameter_state        Varchar(32) ,
+vm_id                            UUID        ,
+vm_state                         Varchar(32) ,
+vm_cpu_core_count                Int         ,
+vm_memory_size                   Int         ,
+vm_disk_size                     Int         ,
+vm_desk_network_id               UUID        ,
+vm_ip_address                    Varchar(32) ,
+abort_state                      Varchar(32) ,
+publish_state                    Varchar(32) ,
+support_golden_image             Boolean     ,
+support_application_delivery     Boolean     ,
+guest_tool_ready                 boolean      DEFAULT FALSE NOT NULL,
+vm_desk_network_id_backup        UUID        ,
+vm_ip_address_backup             Varchar(32)
+);
+
+
+
+/*泽塔镜像模板主表映射*/
+CREATE TABLE t_cbb_zeta_image_template_mapping (
+id                      UUID        PRIMARY KEY NOT NULL,
+version                 int         DEFAULT 0 NOT NULL,
+create_time             Date        NOT NULL,
+rcdc_image_template_id  UUID        NOT NULL,
+zeta_image_template_id  Varchar(64) ,
+exponent_token          Varchar(64) NOT NULL
+
+);
+
+/*泽塔镜像模板快照映射*/
+CREATE TABLE t_cbb_zeta_image_template_restore_point_mapping (
+id                     UUID        PRIMARY KEY NOT NULL,
+version                int         DEFAULT 0 NOT NULL,
+create_time            Date        NOT NULL,
+rcdc_restorepoint_id  UUID        NOT NULL,
+zeta_snapshot_id       Varchar(64) ,
+exponent_token         Varchar(64) NOT NULL
+
+);
+
+
+/*泽塔临时虚机映射*/
+CREATE TABLE t_cbb_zeta_temp_vm_mapping (
+id                       UUID            PRIMARY KEY NOT NULL,
+version                  int             DEFAULT 0 NOT NULL,
+create_time              Date            NOT NULL,
+rcdc_vm_id               uuid            NOT NULL,
+zeta_vm_id               Varchar(64)     ,
+zeta_snapshot_id         Varchar(64)     ,
+zeta_os_iso_file_id      Varchar(64)     ,
+zeta_image_template_id   Varchar(64)     ,
+exponent_token           Varchar(64)     NOT NULL
+
+);
+
+COMMENT ON COLUMN t_cbb_zeta_temp_vm_mapping.zeta_snapshot_id IS '编辑已有镜像时，本字段不可为空 ';
+COMMENT ON COLUMN t_cbb_zeta_temp_vm_mapping.zeta_os_iso_file_id IS '使用ISO启动虚机时，本字段不可为空';
+COMMENT ON COLUMN t_cbb_zeta_temp_vm_mapping.zeta_image_template_id IS '使用导入的预制镜像启动虚机时，本字段不可为空';
+
+/*ISO文件记录*/
+CREATE TABLE t_cbb_os_iso_file (
+id               UUID              PRIMARY KEY NOT NULL,
+version          int               DEFAULT 0 NOT NULL,
+create_time      Date              NOT NULL,
+file_name        Varchar(128)      NOT NULL,
+file_md5         Varchar(64)       NOT NULL,
+file_state       Varchar(32)       NOT NULL,
+ref_count        int               NOT NULL,
+file_size        bigint            NOT NULL
+
+);
+
+COMMENT ON COLUMN t_cbb_os_iso_file.file_name IS '唯一索引';
+COMMENT ON COLUMN t_cbb_os_iso_file.file_md5 IS '唯一索引';
+
+
+/*HCI层的ISO文件记录*/
+CREATE TABLE t_cbb_zeta_upload_file_mapping (        
+id            UUID             PRIMARY KEY NOT NULL,
+version       int              DEFAULT 0 NOT NULL,
+create_time   Date             NOT NULL,
+rcdc_file_id  UUID             NOT NULL,
+zeta_file_id  Varchar(64)      ,
+file_name     Varchar(128)     NOT NULL,
+file_md5      Varchar(64)      NOT NULL
+);
+
+COMMENT ON COLUMN t_cbb_zeta_upload_file_mapping.zeta_file_id IS '如果文件尚未添加成功，可以为空';
+
+
